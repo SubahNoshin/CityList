@@ -10,7 +10,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.Espresso.onView;
 
 import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -75,5 +77,32 @@ public class MainActivityTest {
         onData(anything()).inAdapterView(withId(R.id.city_list)).atPosition(0).perform(click()); //Check the content on the list - no content in this case
         Espresso.pressBack(); //Back button
     }
+    @Test
+    public void testTask()
+    {
+        sleep(1.5f);
+        onView(withId(R.id.button_add)).perform(click()); //Click add button to add a city to the listsleep(1.5f);
+        onView(withId(R.id.editText_name)).perform(ViewActions.typeText("Edmonton")); //Type a city namesleep(1.5f);
+        //Espresso.pressBack();
+        onView(withId(R.id.button_confirm)).perform(click()); //Confirm the city name and add to the listsleep(1.5f);
+
+        onData(anything()).inAdapterView(withId(R.id.city_list)).atPosition(0).perform(click());
+        sleep(3); // wait until showActivity is loaded
+
+        onView(withId(R.id.second)).check(matches(isDisplayed()));sleep(1.5f);
+        onView(withText(endsWith("Edmonton"))).check(matches(isDisplayed()));sleep(1.5f);
+        onView(withId(R.id.button)).perform(click());sleep(1.5f);
+
+        sleep(4); //wait until MainActivity is reloaded again
+        onView(withId(R.id.main)).check(matches(isDisplayed()));
+
+    }
+
+    private void sleep(float i){
+        try{
+            Thread.sleep((long)(i* 1000L));
+        }catch (Exception ignored){}
+    }
 
 }
+
